@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "potionparticlepack",
+  "version": "${version}",
+  "name": "potionparticlepack",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/AmyMi/potionparticlepack"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/potionparticlepack/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "xyz.amymialee.potionparticlepack.client.PotionParticlePackClient"
+    ],
+    "main": [
+      "xyz.amymialee.potionparticlepack.Potionparticlepack"
+    ]
+  },
+  "mixins": [
+    "potionparticlepack.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
