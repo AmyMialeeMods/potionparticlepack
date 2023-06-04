@@ -4,8 +4,12 @@
   "package": "xyz.amymialee.potionparticlepack.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LivingEntityMixin",
+    "PotionUtilMixin"
   ],
   "client": [
+    "ItemRendererMixin",
+    "StatusEffectMixin"
   ],
   "injectors": {
     "defaultRequire": 1
