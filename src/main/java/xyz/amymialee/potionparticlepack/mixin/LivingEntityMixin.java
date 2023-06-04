@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.Perspective;
@@ -14,7 +15,9 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,8 +25,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xyz.amymialee.potionparticlepack.PotionParticlePack;
 import xyz.amymialee.potionparticlepack.PotionParticlePackComponents;
 import xyz.amymialee.potionparticlepack.cca.StatusComponent;
+import xyz.amymialee.potionparticlepack.particle.StatusEffectParticleEffect;
 
 import java.util.Collection;
 import java.util.Map;
@@ -35,6 +41,16 @@ public abstract class LivingEntityMixin extends Entity {
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z", at = @At("RETURN"))
+    private void potionParticlePack$addStatusParticle(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValue()) {
+            if (this.world instanceof ServerWorld serverWorld) {
+                serverWorld.spawnParticles(new StatusEffectParticleEffect(PotionParticlePack.POTION_EFFECT, effect.getEffectType()),
+                        this.getX(), this.getY() + this.getHeight(), this.getZ(), 10, 1, 1, 1, 0.01);
+            }
+        }
     }
 
     @WrapOperation(method = "tickStatusEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;get(Lnet/minecraft/entity/data/TrackedData;)Ljava/lang/Object;", ordinal = 0))

@@ -4,8 +4,7 @@
   "package": "xyz.amymialee.potionparticlepack.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "LivingEntityMixin",
-    "PotionUtilMixin"
+    "LivingEntityMixin"
   ],
   "client": [
     "ItemRendererMixin",
