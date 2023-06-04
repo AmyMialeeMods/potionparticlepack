@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
@@ -15,7 +14,6 @@ import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import xyz.amymialee.potionparticlepack.particle.StatusEffectParticle;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,7 +23,6 @@ public class PotionParticlePackClient implements ClientModInitializer {
     public void onInitializeClient() {
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new StatusEffectReloadListener());
         FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("legacy_colors"), modContainer, ResourcePackActivationType.NORMAL));
-        ParticleFactoryRegistry.getInstance().register(PotionParticlePack.POTION_EFFECT, new StatusEffectParticle.Factory());
     }
 
     private static class StatusEffectReloadListener implements SimpleSynchronousResourceReloadListener {
