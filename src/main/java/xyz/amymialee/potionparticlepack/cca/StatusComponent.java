@@ -17,6 +17,7 @@ public class StatusComponent implements AutoSyncedComponent {
 	private final LivingEntity entity;
 	private final Map<Integer, Integer> effects = new HashMap<>();
 	private int totalWeight = 0;
+	private boolean activeFlag = false;
 
 	public StatusComponent(LivingEntity entity) {
 		this.entity = entity;
@@ -29,6 +30,7 @@ public class StatusComponent implements AutoSyncedComponent {
 			this.effects.put(Registries.STATUS_EFFECT.getRawId(effect.getEffectType()), effect.getAmplifier() + 1);
 			this.totalWeight += effect.getAmplifier() + 1;
 		}
+		this.activeFlag = true;
 		PotionParticlePackComponents.STATUS.sync(this.entity);
 	}
 
@@ -51,6 +53,14 @@ public class StatusComponent implements AutoSyncedComponent {
 		return -1;
 	}
 
+	public float getWeight() {
+		return this.totalWeight;
+	}
+
+	public boolean isActive() {
+		return this.activeFlag;
+	}
+
 	@Override
 	public void readFromNbt(NbtCompound tag) {
 		this.clear();
@@ -61,6 +71,7 @@ public class StatusComponent implements AutoSyncedComponent {
 			this.effects.put(effects[i], weights[i]);
 		}
 		this.totalWeight = tag.getInt("totalWeight");
+		this.activeFlag = tag.getBoolean("activeFlag");
 	}
 
 	@Override
@@ -68,5 +79,6 @@ public class StatusComponent implements AutoSyncedComponent {
 		tag.putIntArray("effects", new ArrayList<>(this.effects.keySet()));
 		tag.putIntArray("weights", new ArrayList<>(this.effects.values()));
 		tag.putInt("totalWeight", this.totalWeight);
+		tag.putBoolean("activeFlag", this.activeFlag);
 	}
 }

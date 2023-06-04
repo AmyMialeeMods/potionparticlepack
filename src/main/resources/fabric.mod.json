@@ -14,12 +14,6 @@
   "icon": "assets/potionparticlepack/icon.png",
   "environment": "*",
   "entrypoints": {
-    "fabric-datagen": [
-      "xyz.amymialee.potionparticlepack.PotionParticlePackDataGen"
-    ],
-    "preLaunch": [
-      "xyz.amymialee.potionparticlepack.PotionParticlePackPreLaunch"
-    ],
     "client": [
       "xyz.amymialee.potionparticlepack.PotionParticlePackClient"
     ],
@@ -33,7 +27,6 @@
   "mixins": [
     "potionparticlepack.mixins.json"
   ],
-  "accessWidener": "potionparticlepack.accesswidener",
   "custom": {
     "cardinal-components": [
       "potionparticlepack:status"
