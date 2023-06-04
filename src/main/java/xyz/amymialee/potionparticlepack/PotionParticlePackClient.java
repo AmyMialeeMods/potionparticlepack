@@ -33,6 +33,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
 
         @Override
         public void reload(ResourceManager manager) {
+            PotionParticlePack.effectColors.clear();
             manager.findAllResources("status_effects", path -> path.getPath().endsWith(".json")).forEach((identifier, resources) -> {
                 for (Resource resource : resources) {
                     try (InputStream stream = resource.getInputStream()) {

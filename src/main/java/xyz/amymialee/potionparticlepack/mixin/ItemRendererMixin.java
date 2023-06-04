@@ -13,10 +13,12 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.resource.SynchronousResourceReloader;
+import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,10 +34,19 @@ import java.util.List;
 public abstract class ItemRendererMixin implements SynchronousResourceReloader {
     @Shadow @Final private MinecraftClient client;
 
+    @Inject(method = "innerRenderInGui(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At("HEAD"), cancellable = true)
+    private void potionParticlePack$hideItem(MatrixStack matrices, LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int depth, CallbackInfo ci) {
+        if (Screen.hasShiftDown() && this.client.currentScreen != null) {
+            if (PotionUtil.getPotionEffects(stack).size() >= 1) {
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 0.4f);
+            }
+        }
+    }
+
     @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("TAIL"))
     private void potionParticlePack$letsSeeTheEffects(MatrixStack matrices, TextRenderer textRenderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
         List<StatusEffectInstance> collection = PotionUtil.getPotionEffects(stack);
-        if (this.client.player != null && Screen.hasShiftDown()) {
+        if (this.client.player != null && Screen.hasShiftDown() && this.client.currentScreen != null) {
             for (int i = 0; i < collection.size(); i++) {
                 StatusEffectInstance instance = collection.get(i);
                 RenderSystem.enableBlend();
@@ -46,14 +57,7 @@ public abstract class ItemRendererMixin implements SynchronousResourceReloader {
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                 int xOffset = -1 + (18 / collection.size() * (i));
                 int yOffset = -1 + (18 - size) / 2;
-                RenderSystem.setShaderColor(0.0f, 0.0f, 0.0f, 0.1f); // * MathHelper.sin((float) (this.client.player.age * (Math.PI / 180.0) * 4)));
-                for (int j = -1; j <= 1; j++) {
-                    for (int k = -1; k <= 1; k++) {
-                        if (j == 0 && k == 0) continue;
-                        this.renderIcon(matrices, sprite, x, y, size, xOffset + (j), yOffset + (k));
-                    }
-                }
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f); //, MathHelper.sin((float) (this.client.player.age * (Math.PI / 180.0) * 4)));
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                 this.renderIcon(matrices, sprite, x, y, size, xOffset, yOffset);
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             }
