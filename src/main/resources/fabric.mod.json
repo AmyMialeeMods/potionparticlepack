@@ -32,6 +32,7 @@
       "potionparticlepack:status"
     ]
   },
+  "accessWidener": "potionparticlepack.accesswidener",
   "depends": {
     "fabric": "*"
   }

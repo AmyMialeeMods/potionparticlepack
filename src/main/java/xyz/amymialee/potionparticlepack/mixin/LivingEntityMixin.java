@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.amymialee.potionparticlepack.PotionParticlePackClient;
 import xyz.amymialee.potionparticlepack.PotionParticlePackComponents;
 import xyz.amymialee.potionparticlepack.cca.StatusComponent;
 
@@ -30,7 +31,6 @@ import java.util.Map;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity {
     @Shadow @Final private Map<StatusEffect, StatusEffectInstance> activeStatusEffects;
-    @Shadow @Final private static TrackedData<Boolean> POTION_SWIRLS_AMBIENT;
 
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -52,37 +52,8 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "tickStatusEffects", at = @At("TAIL"))
     private void potionParticlePack$showParticles(CallbackInfo ci, @Share("color") LocalIntRef baseColor) {
         if (!this.world.isClient) return;
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
         LivingEntity thisEntity = (LivingEntity) (Object) this;
-        if (player == thisEntity && MinecraftClient.getInstance().options.getPerspective() == Perspective.FIRST_PERSON) {
-            return;
-        }
-        StatusComponent component = PotionParticlePackComponents.STATUS.get(this);
-        if (!component.isActive()) return;
-        int potionColor = baseColor.get();
-        if (potionColor >= 0) {
-            boolean ambient = this.dataTracker.get(POTION_SWIRLS_AMBIENT);
-            boolean invisible = this.isInvisible();
-            float power = component.getWeight() / 4;
-            if (invisible && this.random.nextInt(24) != 0) return;
-            if (ambient && this.random.nextInt(3) != 0) return;
-            while (power > 0) {
-                if (power < 1) {
-                    if (this.random.nextFloat() > power) {
-                        break;
-                    }
-                }
-                StatusEffect statusEffect = component.getRandomEffect();
-                if (statusEffect != null) {
-                    int color = statusEffect.getColor();
-                    double d = (double) (color >> 16 & 0xFF) / 255.0;
-                    double e = (double) (color >> 8 & 0xFF) / 255.0;
-                    double f = (double) (color & 0xFF) / 255.0;
-                    this.getWorld().addParticle(ambient || invisible ? ParticleTypes.AMBIENT_ENTITY_EFFECT : ParticleTypes.ENTITY_EFFECT, this.getParticleX(0.5), this.getRandomBodyY(), this.getParticleZ(0.5), d, e, f);
-                }
-                power--;
-            }
-        }
+        PotionParticlePackClient.renderParticles(thisEntity, baseColor.get());
     }
 
     @Inject(method = "clearPotionSwirls", at = @At(value = "TAIL"))

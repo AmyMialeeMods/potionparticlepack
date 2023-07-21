@@ -5,7 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import xyz.amymialee.potionparticlepack.PotionParticlePackComponents;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class StatusComponent implements AutoSyncedComponent {
 		this.effects.clear();
 		this.totalWeight = 0;
 		for (StatusEffectInstance effect : effects) {
-			this.effects.put(Registries.STATUS_EFFECT.getRawId(effect.getEffectType()), effect.getAmplifier() + 1);
+			this.effects.put(Registry.STATUS_EFFECT.getRawId(effect.getEffectType()), effect.getAmplifier() + 1);
 			this.totalWeight += effect.getAmplifier() + 1;
 		}
 		this.activeFlag = true;
@@ -40,7 +40,7 @@ public class StatusComponent implements AutoSyncedComponent {
 	}
 
 	public StatusEffect getRandomEffect() {
-		return Registries.STATUS_EFFECT.get(this.getRandomElement());
+		return Registry.STATUS_EFFECT.get(this.getRandomElement());
 	}
 
 	public int getRandomElement() {
