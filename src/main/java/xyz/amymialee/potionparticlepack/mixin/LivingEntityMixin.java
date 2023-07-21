@@ -52,8 +52,7 @@ public abstract class LivingEntityMixin extends Entity {
     @Inject(method = "tickStatusEffects", at = @At("TAIL"))
     private void potionParticlePack$showParticles(CallbackInfo ci, @Share("color") LocalIntRef baseColor) {
         if (!this.world.isClient) return;
-        LivingEntity thisEntity = (LivingEntity) (Object) this;
-        PotionParticlePackClient.renderParticles(thisEntity, baseColor.get());
+        PotionParticlePackClient.renderParticles((LivingEntity) (Object) this, baseColor.get());
     }
 
     @Inject(method = "clearPotionSwirls", at = @At(value = "TAIL"))

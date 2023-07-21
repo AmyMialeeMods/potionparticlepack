@@ -28,7 +28,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new StatusEffectReloadListener());
-        FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("legacy_colors"), modContainer, ResourcePackActivationType.NORMAL));
+        FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("legacy_colors"), modContainer, "Legacy Potion Colors", ResourcePackActivationType.NORMAL));
     }
 
     public static void renderParticles(LivingEntity entity, int baseColor) {
@@ -37,8 +37,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
             return;
         }
         StatusComponent component = PotionParticlePackComponents.STATUS.get(entity);
-        if (!component.isActive()) return;
-        if (baseColor >= 0) {
+        if (component.isActive() && baseColor >= 0) {
             boolean ambient = entity.getDataTracker().get(LivingEntity.POTION_SWIRLS_AMBIENT);
             boolean invisible = entity.isInvisible();
             float power = component.getWeight() / 4;

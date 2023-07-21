@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class StatusComponent implements AutoSyncedComponent {
 	private final LivingEntity entity;
-	private final Map<Integer, Integer> effects = new HashMap<>();
+	private final Map<StatusEffect, Integer> effects = new HashMap<>();
 	private int totalWeight = 0;
 	private boolean activeFlag = false;
 
@@ -27,7 +27,7 @@ public class StatusComponent implements AutoSyncedComponent {
 		this.effects.clear();
 		this.totalWeight = 0;
 		for (StatusEffectInstance effect : effects) {
-			this.effects.put(Registry.STATUS_EFFECT.getRawId(effect.getEffectType()), effect.getAmplifier() + 1);
+			this.effects.put(effect.getEffectType(), effect.getAmplifier() + 1);
 			this.totalWeight += effect.getAmplifier() + 1;
 		}
 		this.activeFlag = true;
@@ -40,17 +40,13 @@ public class StatusComponent implements AutoSyncedComponent {
 	}
 
 	public StatusEffect getRandomEffect() {
-		return Registry.STATUS_EFFECT.get(this.getRandomElement());
-	}
-
-	public int getRandomElement() {
-		if (this.effects.isEmpty()) return -1;
+		if (this.effects.isEmpty()) return null;
 		int random = (int) (this.entity.getRandom().nextDouble() * this.totalWeight);
-		for (Map.Entry<Integer, Integer> entry : this.effects.entrySet()) {
+		for (Map.Entry<StatusEffect, Integer> entry : this.effects.entrySet()) {
 			random -= entry.getValue();
 			if (random < 0) return entry.getKey();
 		}
-		return -1;
+		return null;
 	}
 
 	public float getWeight() {
@@ -68,7 +64,8 @@ public class StatusComponent implements AutoSyncedComponent {
 		int[] weights = tag.getIntArray("weights");
 		if (effects.length != weights.length) return;
 		for (int i = 0; i < effects.length; i++) {
-			this.effects.put(effects[i], weights[i]);
+			StatusEffect effect = Registry.STATUS_EFFECT.get(effects[i]);
+			if (effect != null) this.effects.put(effect, weights[i]);
 		}
 		this.totalWeight = tag.getInt("totalWeight");
 		this.activeFlag = tag.getBoolean("activeFlag");
@@ -76,7 +73,7 @@ public class StatusComponent implements AutoSyncedComponent {
 
 	@Override
 	public void writeToNbt(NbtCompound tag) {
-		tag.putIntArray("effects", new ArrayList<>(this.effects.keySet()));
+		tag.putIntArray("effects", new ArrayList<>(this.effects.keySet().stream().map(Registry.STATUS_EFFECT::getRawId).toList()));
 		tag.putIntArray("weights", new ArrayList<>(this.effects.values()));
 		tag.putInt("totalWeight", this.totalWeight);
 		tag.putBoolean("activeFlag", this.activeFlag);
