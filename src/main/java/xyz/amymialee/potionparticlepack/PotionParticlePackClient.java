@@ -14,11 +14,11 @@ import net.minecraft.client.option.Perspective;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import xyz.amymialee.potionparticlepack.cca.StatusComponent;
 
 import java.io.InputStream;
@@ -28,7 +28,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new StatusEffectReloadListener());
-        FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("new_colors"), modContainer, "§bNew Potion Colors", ResourcePackActivationType.NORMAL));
+        FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("legacy_colors"), modContainer, "§bLegacy Potion Colors", ResourcePackActivationType.NORMAL));
     }
 
     public static void renderParticles(LivingEntity entity, int baseColor) {
@@ -76,7 +76,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
                     try (InputStream stream = resource.getInputStream()) {
                         JsonObject json = JsonParser.parseReader(new JsonReader(new InputStreamReader(stream))).getAsJsonObject();
                         Identifier effectId = new Identifier(identifier.getNamespace(), identifier.getPath().substring(15, identifier.getPath().length() - 5));
-                        StatusEffect effect = Registry.STATUS_EFFECT.get(effectId);
+                        StatusEffect effect = Registries.STATUS_EFFECT.get(effectId);
                         if (effect != null) {
                             PotionParticlePack.effectColors.put(effect, json.get("color").getAsInt());
                         }

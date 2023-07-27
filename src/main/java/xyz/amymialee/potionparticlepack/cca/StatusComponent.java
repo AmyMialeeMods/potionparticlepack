@@ -5,7 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import xyz.amymialee.potionparticlepack.PotionParticlePackComponents;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class StatusComponent implements AutoSyncedComponent {
 		int[] weights = tag.getIntArray("weights");
 		if (effects.length != weights.length) return;
 		for (int i = 0; i < effects.length; i++) {
-			StatusEffect effect = Registry.STATUS_EFFECT.get(effects[i]);
+			StatusEffect effect = Registries.STATUS_EFFECT.get(effects[i]);
 			if (effect != null) this.effects.put(effect, weights[i]);
 		}
 		this.totalWeight = tag.getInt("totalWeight");
@@ -73,7 +73,7 @@ public class StatusComponent implements AutoSyncedComponent {
 
 	@Override
 	public void writeToNbt(NbtCompound tag) {
-		tag.putIntArray("effects", new ArrayList<>(this.effects.keySet().stream().map(Registry.STATUS_EFFECT::getRawId).toList()));
+		tag.putIntArray("effects", new ArrayList<>(this.effects.keySet().stream().map(Registries.STATUS_EFFECT::getRawId).toList()));
 		tag.putIntArray("weights", new ArrayList<>(this.effects.values()));
 		tag.putInt("totalWeight", this.totalWeight);
 		tag.putBoolean("activeFlag", this.activeFlag);
