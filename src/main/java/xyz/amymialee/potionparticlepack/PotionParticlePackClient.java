@@ -28,7 +28,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new StatusEffectReloadListener());
-        FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("legacy_colors"), modContainer, "Legacy Potion Colors", ResourcePackActivationType.NORMAL));
+        FabricLoader.getInstance().getModContainer(PotionParticlePack.MOD_ID).ifPresent(modContainer -> ResourceManagerHelper.registerBuiltinResourcePack(PotionParticlePack.id("new_colors"), modContainer, "§bNew Potion Colors", ResourcePackActivationType.NORMAL));
     }
 
     public static void renderParticles(LivingEntity entity, int baseColor) {
