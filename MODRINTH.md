@@ -29,7 +29,7 @@ Now each potion you have active will show its own colours separately, with highe
 It can be easy to mix up all your potions, especially when you have multiple of the same effect.
 Now when you hold shift, all potions and arrows will show you what effect they have with the icon, so you don't need to check them individually.
 
-<img src="https://github.com/AmyMialeeMods/potionparticlepack/blob/main/assets/itemicons.png?raw=true"><br>
+<img src="https://github.com/AmyMialeeMods/potionparticlepack/blob/main/assets/itemicons.gif?raw=true"><br>
 
 
 ### No First Person Particles

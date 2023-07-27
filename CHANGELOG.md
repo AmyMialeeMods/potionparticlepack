@@ -1,1 +1,1 @@
-- Mod Created
+- Updated Resource Pack Version
