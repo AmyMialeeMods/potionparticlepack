@@ -7,7 +7,7 @@
     "LivingEntityMixin"
   ],
   "client": [
-    "ItemRendererMixin",
+    "DrawContextMixin",
     "StatusEffectMixin"
   ],
   "injectors": {

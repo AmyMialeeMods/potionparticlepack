@@ -2,7 +2,7 @@ package xyz.amymialee.potionparticlepack.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -10,7 +10,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -30,13 +29,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-@Mixin(ItemRenderer.class)
-public abstract class ItemRendererMixin implements SynchronousResourceReloader {
-    @Shadow @Final
-    private MinecraftClient client;
+@Mixin(DrawContext.class)
+public abstract class DrawContextMixin implements SynchronousResourceReloader {
+    @Shadow @Final private MinecraftClient client;
+    @Shadow @Final private MatrixStack matrices;
 
-    @Inject(method = "innerRenderInGui(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At("HEAD"), cancellable = true)
-    private void potionParticlePack$hideItem(MatrixStack matrices, LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int depth, CallbackInfo ci) {
+    @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At("HEAD"), cancellable = true)
+    private void potionParticlePack$hideItem(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int z, CallbackInfo ci) {
         if (Screen.hasShiftDown() && this.client.currentScreen != null) {
             if (PotionUtil.getPotionEffects(stack).size() >= 1) {
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 0.4f);
@@ -44,8 +43,8 @@ public abstract class ItemRendererMixin implements SynchronousResourceReloader {
         }
     }
 
-    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V", at = @At("TAIL"))
-    private void potionParticlePack$letsSeeTheEffects(MatrixStack matrices, TextRenderer textRenderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
+    @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At(value = "TAIL"))
+    private void potionParticlePack$letsSeeTheEffects(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int z, CallbackInfo ci) {
         List<StatusEffectInstance> collection = PotionUtil.getPotionEffects(stack);
         if (this.client.player != null && Screen.hasShiftDown() && this.client.currentScreen != null) {
             for (int i = 0; i < collection.size(); i++) {
@@ -59,7 +58,7 @@ public abstract class ItemRendererMixin implements SynchronousResourceReloader {
                 int xOffset = -1 + (18 / collection.size() * (i));
                 int yOffset = -1 + (18 - size) / 2;
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-                this.renderIcon(matrices, sprite, x, y, size, xOffset, yOffset);
+                this.renderIcon(this.matrices, sprite, x, y, size, xOffset, yOffset);
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
             }
         }
