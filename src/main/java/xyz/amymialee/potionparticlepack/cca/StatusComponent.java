@@ -65,7 +65,7 @@ public class StatusComponent implements AutoSyncedComponent {
 		if (effects.length != weights.length) return;
 		for (int i = 0; i < effects.length; i++) {
 			StatusEffect effect = Registry.STATUS_EFFECT.get(effects[i]);
-			if (effect != null) this.effects.put(effect, weights[i]);
+			if (effect != null && effect.getColor() != 0) this.effects.put(effect, weights[i]);
 		}
 		this.totalWeight = tag.getInt("totalWeight");
 		this.activeFlag = tag.getBoolean("activeFlag");
