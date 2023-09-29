@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.amymialee.potionparticlepack.PotionParticlePackClient;
 import xyz.amymialee.potionparticlepack.PotionParticlePackComponents;
+import xyz.amymialee.potionparticlepack.PotionParticlePackConfig;
 
 import java.util.Map;
 
@@ -33,13 +34,15 @@ public abstract class LivingEntityMixin extends Entity {
 
     @WrapOperation(method = "tickStatusEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;get(Lnet/minecraft/entity/data/TrackedData;)Ljava/lang/Object;", ordinal = 0))
     private Object potionParticlePack$hideVanillaParticles(DataTracker tracker, TrackedData<Object> data, Operation<Object> operation, @Share("color") LocalIntRef color) {
-        if (PotionParticlePackComponents.STATUS.get(this).isActive()) {
+        if (PotionParticlePackConfig.enableMultipleColors && PotionParticlePackComponents.STATUS.get(this).isActive()) {
             if (tracker.get(data) instanceof Integer integer) {
                 color.set(integer);
             } else {
                 color.set(-1);
             }
             return 0;
+        } else {
+            color.set(-1);
         }
         return operation.call(tracker, data);
     }

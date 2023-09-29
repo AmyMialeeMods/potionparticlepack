@@ -1,0 +1,14 @@
+{
+  "potionparticlepack.midnightconfig.title" : "Potion Particle Pack",
+
+  "potionparticlepack.midnightconfig.enableMultipleColors" : "Enable Multiple Potion Colors",
+  "potionparticlepack.midnightconfig.enableMultipleColors.tooltip" : "Each status effect will show their own particles,\ninstead of merging into one color.",
+  "potionparticlepack.midnightconfig.hideParticlesInFirstPerson" : "Hide Particles in First Person",
+  "potionparticlepack.midnightconfig.hideParticlesInFirstPerson.tooltip" : "Hide your own particles when you are in first person view.",
+  "potionparticlepack.midnightconfig.effectIconVisibility" : "Effect Icon Visibility",
+  "potionparticlepack.midnightconfig.effectIconVisibility.tooltip" : "When should Effect Icons display over their items.",
+  "potionparticlepack.midnightconfig.enum.EffectIcon.SHIFT_SHOW" : "Show when Shift is held",
+  "potionparticlepack.midnightconfig.enum.EffectIcon.SHIFT_HIDE" : "Hide when Shift is held",
+  "potionparticlepack.midnightconfig.enum.EffectIcon.ALWAYS_SHOW" : "Always show",
+  "potionparticlepack.midnightconfig.enum.EffectIcon.ALWAYS_HIDE" : "Always hide"
+}

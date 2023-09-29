@@ -33,7 +33,7 @@ public class PotionParticlePackClient implements ClientModInitializer {
 
     public static void renderParticles(LivingEntity entity, int baseColor) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        if (player == entity && MinecraftClient.getInstance().options.getPerspective() == Perspective.FIRST_PERSON) {
+        if (PotionParticlePackConfig.hideParticlesInFirstPerson && player == entity && MinecraftClient.getInstance().options.getPerspective() == Perspective.FIRST_PERSON) {
             return;
         }
         StatusComponent component = PotionParticlePackComponents.STATUS.get(entity);
