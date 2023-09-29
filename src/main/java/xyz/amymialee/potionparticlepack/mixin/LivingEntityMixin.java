@@ -34,6 +34,10 @@ public abstract class LivingEntityMixin extends Entity {
 
     @WrapOperation(method = "tickStatusEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/data/DataTracker;get(Lnet/minecraft/entity/data/TrackedData;)Ljava/lang/Object;", ordinal = 0))
     private Object potionParticlePack$hideVanillaParticles(DataTracker tracker, TrackedData<Object> data, Operation<Object> operation, @Share("color") LocalIntRef color) {
+        if (PotionParticlePackConfig.hidePotionParticles) {
+            color.set(-1);
+            return 0;
+        }
         if (PotionParticlePackConfig.enableMultipleColors && PotionParticlePackComponents.STATUS.get(this).isActive()) {
             if (tracker.get(data) instanceof Integer integer) {
                 color.set(integer);

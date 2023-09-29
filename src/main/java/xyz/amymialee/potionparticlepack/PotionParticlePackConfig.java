@@ -5,6 +5,7 @@ import eu.midnightdust.lib.config.MidnightConfig;
 public class PotionParticlePackConfig extends MidnightConfig {
     @Entry public static boolean enableMultipleColors = true;
     @Entry public static boolean hideParticlesInFirstPerson = true;
+    @Entry public static boolean hidePotionParticles = false;
 //    @Entry public static EffectIcon effectIconVisibility = EffectIcon.SHIFT_SHOW; // TODO: Not Implemented
 //
 //    public enum EffectIcon {
