@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "potionparticlepack",
   "version": "${version}",
-  "name": "potionparticlepack",
+  "name": "Potion Particle Pack",
   "description": "Pretty Potion Particles",
   "authors": [
     "AmyMialee"
@@ -30,7 +30,13 @@
   "custom": {
     "cardinal-components": [
       "potionparticlepack:status"
-    ]
+    ],
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.com/invite/P4dUsxv6An"
+      },
+      "update_checker": true
+    }
   },
   "accessWidener": "potionparticlepack.accesswidener",
   "depends": {
