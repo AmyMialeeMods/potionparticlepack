@@ -6,6 +6,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
+import org.jetbrains.annotations.NotNull;
 import xyz.amymialee.potionparticlepack.PotionParticlePackComponents;
 
 import java.util.ArrayList;
@@ -23,10 +24,10 @@ public class StatusComponent implements AutoSyncedComponent {
 		this.entity = entity;
 	}
 
-	public void setEffects(Collection<StatusEffectInstance> effects) {
+	public void setEffects(@NotNull Collection<StatusEffectInstance> effects) {
 		this.effects.clear();
 		this.totalWeight = 0;
-		for (StatusEffectInstance effect : effects) {
+		for (var effect : effects) {
 			this.effects.put(effect.getEffectType(), effect.getAmplifier() + 1);
 			this.totalWeight += effect.getAmplifier() + 1;
 		}
@@ -41,8 +42,8 @@ public class StatusComponent implements AutoSyncedComponent {
 
 	public StatusEffect getRandomEffect() {
 		if (this.effects.isEmpty()) return null;
-		int random = (int) (this.entity.getRandom().nextDouble() * this.totalWeight);
-		for (Map.Entry<StatusEffect, Integer> entry : this.effects.entrySet()) {
+        var random = (int) (this.entity.getRandom().nextDouble() * this.totalWeight);
+		for (var entry : this.effects.entrySet()) {
 			random -= entry.getValue();
 			if (random < 0) return entry.getKey();
 		}
@@ -58,13 +59,13 @@ public class StatusComponent implements AutoSyncedComponent {
 	}
 
 	@Override
-	public void readFromNbt(NbtCompound tag) {
+	public void readFromNbt(@NotNull NbtCompound tag) {
 		this.clear();
-		int[] effects = tag.getIntArray("effects");
-		int[] weights = tag.getIntArray("weights");
+        var effects = tag.getIntArray("effects");
+        var weights = tag.getIntArray("weights");
 		if (effects.length != weights.length) return;
-		for (int i = 0; i < effects.length; i++) {
-			StatusEffect effect = Registries.STATUS_EFFECT.get(effects[i]);
+		for (var i = 0; i < effects.length; i++) {
+            var effect = Registries.STATUS_EFFECT.get(effects[i]);
 			if (effect != null) this.effects.put(effect, weights[i]);
 		}
 		this.totalWeight = tag.getInt("totalWeight");
@@ -72,7 +73,7 @@ public class StatusComponent implements AutoSyncedComponent {
 	}
 
 	@Override
-	public void writeToNbt(NbtCompound tag) {
+	public void writeToNbt(@NotNull NbtCompound tag) {
 		tag.putIntArray("effects", new ArrayList<>(this.effects.keySet().stream().map(Registries.STATUS_EFFECT::getRawId).toList()));
 		tag.putIntArray("weights", new ArrayList<>(this.effects.values()));
 		tag.putInt("totalWeight", this.totalWeight);

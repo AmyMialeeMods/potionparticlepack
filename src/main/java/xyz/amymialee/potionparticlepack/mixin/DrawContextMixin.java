@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.resource.SynchronousResourceReloader;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,7 +38,7 @@ public abstract class DrawContextMixin implements SynchronousResourceReloader {
     @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At("HEAD"), cancellable = true)
     private void potionParticlePack$hideItem(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int z, CallbackInfo ci) {
         if (Screen.hasShiftDown() && this.client.currentScreen != null) {
-            if (PotionUtil.getPotionEffects(stack).size() >= 1) {
+            if (!PotionUtil.getPotionEffects(stack).isEmpty()) {
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 0.4f);
             }
         }
@@ -45,18 +46,18 @@ public abstract class DrawContextMixin implements SynchronousResourceReloader {
 
     @Inject(method = "drawItem(Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;IIII)V", at = @At(value = "TAIL"))
     private void potionParticlePack$letsSeeTheEffects(LivingEntity entity, World world, ItemStack stack, int x, int y, int seed, int z, CallbackInfo ci) {
-        List<StatusEffectInstance> collection = PotionUtil.getPotionEffects(stack);
+        var collection = PotionUtil.getPotionEffects(stack);
         if (this.client.player != null && Screen.hasShiftDown() && this.client.currentScreen != null) {
-            for (int i = 0; i < collection.size(); i++) {
-                StatusEffectInstance instance = collection.get(i);
+            for (var i = 0; i < collection.size(); i++) {
+                var instance = collection.get(i);
                 RenderSystem.enableBlend();
-                Sprite sprite = this.client.getStatusEffectSpriteManager().getSprite(instance.getEffectType());
+                var sprite = this.client.getStatusEffectSpriteManager().getSprite(instance.getEffectType());
                 RenderSystem.setShaderTexture(0, sprite.getAtlasId());
-                int size = 18 / collection.size();
+                var size = 18 / collection.size();
                 RenderSystem.setShader(GameRenderer::getPositionTexProgram);
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
-                int xOffset = -1 + (18 / collection.size() * (i));
-                int yOffset = -1 + (18 - size) / 2;
+                var xOffset = -1 + (18 / collection.size() * (i));
+                var yOffset = -1 + (18 - size) / 2;
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
                 this.renderIcon(this.matrices, sprite, x, y, size, xOffset, yOffset);
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -65,9 +66,9 @@ public abstract class DrawContextMixin implements SynchronousResourceReloader {
     }
 
     @Unique
-    private void renderIcon(MatrixStack matrices, Sprite sprite, int x, int y, int size, float xOffset, float yOffset) {
-        Matrix4f matrix = matrices.peek().getPositionMatrix();
-        BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+    private void renderIcon(@NotNull MatrixStack matrices, @NotNull Sprite sprite, int x, int y, int size, float xOffset, float yOffset) {
+        var matrix = matrices.peek().getPositionMatrix();
+        var bufferBuilder = Tessellator.getInstance().getBuffer();
         bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         bufferBuilder.vertex(matrix, x + xOffset, y + yOffset, 200).texture(sprite.getMinU(), sprite.getMinV()).next();
         bufferBuilder.vertex(matrix, x + xOffset, y + yOffset + size, 200).texture(sprite.getMinU(), sprite.getMaxV()).next();
